@@ -12,8 +12,9 @@ var mongoURI = process.env.NODE_ENV === 'test' ? 'mongodb://localhost/test' : 'm
 mongoose.connect(mongoURI);
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded());
+app.use(cookieParser());
 
-app.post('/signup', userController.createUser);
+app.post('/signup', userController.createUser, sessionController.startSession);
 
 app.get('/', cookieController.setCookie, function(req, res) {
   res.render('./../client/index');
@@ -23,9 +24,9 @@ app.get('/signup', function(req, res) {
   res.render('./../client/signup', {error: null});
 });
 
-app.post('/login', userController.verifyUser);
+app.post('/login', userController.verifyUser, cookieController.setSSIDCookie, sessionController.startSession);
 
-app.get('/secret', sessionController.isLoggedIn, function(req, res) {
+app.get('/secret', sessionController.isLoggedIn,  function(req, res) {
   userController.getAllUsers(function(users) {
     res.render('./../client/secret', { users: users });
   });

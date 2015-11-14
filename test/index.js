@@ -37,7 +37,7 @@ describe('Authentication', function() {
         });
     });
 
-    it('POST request to "/signup" route with incorrectly formatted body should redirect to "/signin" with an error message', function(done) {
+    it('POST request to "/signup" route with incorrectly formatted body should redirect to "/signup" with an error message', function(done) {
         request(app)
           .post('/signup')
           .send({"username": "test2"})
@@ -145,7 +145,9 @@ describe('Authentication', function() {
         .end(function(err, res) {
           User.findOne({username: 'test2'}, function(err, user) {
             Session.findOne({cookieId: user._id}, function(err, session) {
+              console.log(session);
               expect(err).to.be.null;
+
               expect(session).to.be.truthy;
               done();
             });
